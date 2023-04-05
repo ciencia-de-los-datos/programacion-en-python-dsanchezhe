@@ -380,7 +380,7 @@ def pregunta_12():
 
     """
 
-   data = load_data("data.csv")
+    data = load_data("data.csv")
 
     dict_count = {}
     for line in data:
@@ -393,3 +393,4 @@ def pregunta_12():
         dict_count[letter] = dict_count.get(letter, 0) + sum_vals
     dict_count = {k: v for k, v in sorted(dict_count.items(), key=lambda item: item[0])}
     return dict_count
+

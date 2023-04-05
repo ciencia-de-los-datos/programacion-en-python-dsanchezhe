@@ -380,14 +380,16 @@ def pregunta_12():
 
     """
 
-    data = load_data("data.csv")
+   data = load_data("data.csv")
 
     dict_count = {}
     for line in data:
-                    letters = line[3].split(",")
-                    val = int(line[1])
-                    for letter in letters:
-                        dict_count[letter] = dict_count.get(letter, 0) + val
-    dict_count = {k: v for k, v in sorted(dict_count.items(), key=lambda item: item[0])}
+        letter = line[0]
+        dict_ = {
+            string.split(":")[0]: string.split(":")[1] for string in line[4].split(",")
+        }
+        sum_vals = sum([int(v) for v in dict_.values()])
 
+        dict_count[letter] = dict_count.get(letter, 0) + sum_vals
+    dict_count = {k: v for k, v in sorted(dict_count.items(), key=lambda item: item[0])}
     return dict_count

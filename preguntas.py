@@ -409,4 +409,3 @@ def sumar_columna5_por_columna1(datos):
             resultado[columna1] = 0
         resultado[columna1] += columna5
     return resultado
-

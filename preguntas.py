@@ -11,16 +11,13 @@ Utilice el archivo `data.csv` para resolver las preguntas.
 
 
 """
-import itertools
-from collections import Counter
-from datetime import datetime
-from operator import itemgetter
+def load_data(name_file):
+    with open(name_file, "r") as file:
+        data = file.readlines()
 
-
-with open ("data.csv", "r") as file:
-        datos = file.readlines()
-datos = [line.replace('\t','|').replace('\n','') for line in datos]
-datos = [line.split('|')for line in datos]
+    data = [line.replace("\n", "") for line in data]
+    data = [line.split("\t") for line in data]
+    return data
 
 
 def pregunta_01():
@@ -32,12 +29,13 @@ def pregunta_01():
 
     """
     
-def sumar_segunda_columna(datos):
-    suma = 0
-    for fila in datos:
-        suma += int(fila[1])
-    return suma
+    data = load_data("data.csv")
 
+    val = 0
+    for line in data:
+            val += int(line[1])
+    val
+    return val
 
 def pregunta_02():
     """
@@ -54,12 +52,16 @@ def pregunta_02():
     ]
 
     """
-from collections import Counter
+    data = load_data("data.csv")
 
-def contar_registros(datos):
-    contador = Counter([fila[0] for fila in datos])
-    lista_tuplas = sorted([(letra, contador[letra]) for letra in contador])
-    return lista_tuplas
+    letters = sorted(list(set([line[0] for line in data])))
+    dict_count = {letter: 0 for letter in letters}
+    for line in data:
+            letter = line[0]
+            dict_count[letter] = dict_count.get(letter, 0) + 1
+    list_count = [(k, v) for k, v in dict_count.items()]
+
+    return list_count
 
 
 def pregunta_03():
@@ -77,18 +79,16 @@ def pregunta_03():
     ]
 
     """
-def sumar_por_letra(datos):
-    suma_por_letra = {}
-    for fila in datos:
-        letra = fila[0]
-        valor = int(fila[1])
-        if letra in suma_por_letra:
-            suma_por_letra[letra] += valor
-        else:
-            suma_por_letra[letra] = valor
-    resultado = sorted(suma_por_letra.items())
-    return resultado
+    data = load_data("data.csv")
 
+    letters = sorted(list(set([line[0] for line in data])))
+    dict_count = {letter: 0 for letter in letters}
+    for line in data:
+            letter = line[0]
+            val = int(line[1])
+            dict_count[letter] = dict_count.get(letter, 0) + val
+    list_count = [(k, v) for k, v in dict_count.items()]
+    return list_count
 
 def pregunta_04():
     """
@@ -112,19 +112,14 @@ def pregunta_04():
     ]
 
     """
-from datetime import datetime
+    data = load_data("data.csv")
+    dict_count = {}
+    for line in data:
+            month = line[2].split("-")[1]
+            dict_count[month] = dict_count.get(month, 0) + 1
+    list_count = sorted([(k, v) for k, v in dict_count.items()])
+    return list_count
 
-def contar_por_mes(datos):
-    conteo_por_mes = {}
-    for fila in datos:
-        fecha = datetime.strptime(fila[2], '%Y-%m-%d')
-        mes = fecha.strftime('%Y-%m')
-        if mes in conteo_por_mes:
-            conteo_por_mes[mes] += 1
-        else:
-            conteo_por_mes[mes] = 1
-    resultado = sorted(conteo_por_mes.items())
-    return resultado
 
 
 def pregunta_05():
@@ -142,20 +137,21 @@ def pregunta_05():
     ]
 
     """
-def max_min_por_letra(datos):
-    max_min_por_letra = {}
-    for fila in datos:
-        letra = fila[0]
-        valor = int(fila[1])
-        if letra in max_min_por_letra:
-            maximo, minimo = max_min_por_letra[letra]
-            maximo = max(maximo, valor)
-            minimo = min(minimo, valor)
-            max_min_por_letra[letra] = (maximo, minimo)
-        else:
-            max_min_por_letra[letra] = (valor, valor)
-    resultado = sorted(max_min_por_letra.items())
-    return resultado
+    data = load_data("data.csv")
+
+    letters = sorted(list(set([line[0] for line in data])))
+    dict_count = {letter: [0, 10] for letter in letters}
+    for line in data:
+            letter = line[0]
+            val = int(line[1])
+            max_, min_ = dict_count[letter]
+            if val > max_:
+                dict_count[letter][0] = val
+            if val < min_:
+                dict_count[letter][1] = val
+
+    list_count = [(k, *tuple(v)) for k, v in dict_count.items()]
+    return list_count
 
 
 def pregunta_06():
@@ -180,34 +176,25 @@ def pregunta_06():
     ]
 
     """
-def min_max_values(datos):
-    # Inicializar diccionario de resultados
-    result = {}
+    data = load_data("data.csv")
 
-    # Iterar sobre los datos
-    for fila in datos:
-        # Decodificar diccionario
-        dic = eval(fila[4])
-
-        # Iterar sobre las claves del diccionario
-        for clave in dic.keys():
-            # Obtener valor asociado a la clave
-            valor = dic[clave]
-
-            # Actualizar valores máximos y mínimos
-            if clave not in result:
-                result[clave] = {'max': valor, 'min': valor}
-            else:
-                if valor > result[clave]['max']:
-                    result[clave]['max'] = valor
-                if valor < result[clave]['min']:
-                    result[clave]['min'] = valor
-
-    # Convertir diccionario de resultados en lista de tuplas
-    result_list = [(clave, result[clave]['min'], result[clave]['max']) for clave in sorted(result.keys())]
-
-    return result_list
-
+    dict_count = {}
+    for line in data:
+            dict_ = {
+                string.split(":")[0]: string.split(":")[1] for string in line[4].split(",")
+            }
+            for k, v in dict_.items():
+                v = int(v)
+                if k in dict_count:
+                    min_, max_ = dict_count[k]
+                    if v > max_:
+                        dict_count[k][1] = v
+                    if v < min_:
+                        dict_count[k][0] = v
+                else:
+                    dict_count[k] = [v, v]
+    list_count = sorted([(k, *tuple(v)) for k, v in dict_count.items()])
+    return list_count
 
 def pregunta_07():
     """
@@ -230,17 +217,20 @@ def pregunta_07():
     ]
 
     """
-def asociar_letras(datos):
-    diccionario = {}
-    for fila in datos:
-        valor_col2 = fila[1]
-        letra_col1 = fila[0]
-        if valor_col2 not in diccionario:
-            diccionario[valor_col2] = [letra_col1]
-        else:
-            diccionario[valor_col2].append(letra_col1)
-    lista_tuplas = [(valor, letras) for valor, letras in diccionario.items()]
-    return lista_tuplas
+    data = load_data("data.csv")
+
+    dict_count = {}
+    for line in data:
+            letter = line[0]
+            val = int(line[1])
+
+            if val in dict_count:
+                dict_count[val].append(letter)
+            else:
+                dict_count[val] = [letter]
+    list_count = sorted([(k, v) for k, v in dict_count.items()])
+
+    return list_count
 
 
 
@@ -266,28 +256,9 @@ def pregunta_08():
     ]
 
     """
-def lista_tuplas(datos):
-    # Crear diccionario vacío
-    diccionario = {}
+    list_count = pregunta_07()
 
-    # Iterar sobre los datos
-    for fila in datos:
-        # Obtener la segunda columna y la primera columna de la fila
-        valor = int(fila[1])
-        letra = fila[0]
-
-        # Si el valor no está en el diccionario, agregarlo con una lista vacía
-        if valor not in diccionario:
-            diccionario[valor] = []
-
-        # Si la letra no está en la lista de letras para este valor, agregarla
-        if letra not in diccionario[valor]:
-            diccionario[valor].append(letra)
-
-    # Ordenar las claves del diccionario y generar las tuplas
-    tuplas = [(valor, sorted(diccionario[valor])) for valor in sorted(diccionario)]
-
-    return tuplas
+    return [(t[0], sorted(list(dict.fromkeys(t[1])))) for t in list_count]
 
 
 def pregunta_09():
@@ -310,17 +281,18 @@ def pregunta_09():
     }
 
     """
-def contar_claves(datos):
-    conteo = {}
-    for fila in datos:
-        diccionario = dict(item.split(":") for item in fila[4].split(","))
-        claves = diccionario.keys()
-        for clave in claves:
-            if clave not in conteo:
-                conteo[clave] = 1
-            else:
-                conteo[clave] += 1
-    return conteo
+    data = load_data("data.csv")
+
+    dict_count = {}
+    for line in data:
+            dict_ = {
+                string.split(":")[0]: string.split(":")[1] for string in line[4].split(",")
+            }
+            for k, v in dict_.items():
+                dict_count[k] = dict_count.get(k, 0) + 1
+    dict_count = {k: v for k, v in sorted(dict_count.items(), key=lambda item: item[0])}
+    return dict_count
+
 
 
 
@@ -342,16 +314,22 @@ def pregunta_10():
 
 
     """
-def contar_elementos(datos):
-    conteos = {}
-    for fila in datos:
-        letra = fila[0]
-        if letra not in conteos:
-            conteos[letra] = [0, 0]
-        conteos[letra][0] += 1
-        conteos[letra][1] += len(fila[3]) + len(fila[4])
-    lista_tuplas = [(letra, conteos[letra][0], conteos[letra][1]) for letra in sorted(conteos)]
-    return lista_tuplas
+    data = load_data("data.csv")
+
+    letters = sorted(list(set([line[0] for line in data])))
+
+    list_ = []
+    for line in data:
+            letter = line[0]
+            elements_4 = len(line[3].split(","))
+            elements_5 = len(
+                {
+                    string.split(":")[0]: string.split(":")[1]
+                    for string in line[4].split(",")
+                }
+            )
+            list_.append((letter, elements_4, elements_5))
+    return list_
 
 
 
@@ -373,16 +351,17 @@ def pregunta_11():
 
 
     """
-def suma_columna_2_por_letra_columna_4(datos):
-    resultados = {}
-    for fila in datos:
-        letra = fila[3]
-        valor = int(fila[1])
-        if letra in resultados:
-            resultados[letra] += valor
-        else:
-            resultados[letra] = valor
-    return sorted(resultados.items())
+    data = load_data("data.csv")
+
+    dict_count = {}
+    for line in data:
+            letters = line[3].split(",")
+            val = int(line[1])
+            for letter in letters:
+                dict_count[letter] = dict_count.get(letter, 0) + val
+    dict_count = {k: v for k, v in sorted(dict_count.items(), key=lambda item: item[0])}
+
+    return dict_count
 
 
 def pregunta_12():
@@ -400,12 +379,15 @@ def pregunta_12():
     }
 
     """
-def sumar_columna5_por_columna1(datos):
-    resultado = {}
-    for fila in datos:
-        columna1 = fila[0]
-        columna5 = int(fila[4])
-        if columna1 not in resultado:
-            resultado[columna1] = 0
-        resultado[columna1] += columna5
-    return resultado
+
+    data = load_data("data.csv")
+
+    dict_count = {}
+    for line in data:
+                    letters = line[3].split(",")
+                    val = int(line[1])
+                    for letter in letters:
+                        dict_count[letter] = dict_count.get(letter, 0) + val
+    dict_count = {k: v for k, v in sorted(dict_count.items(), key=lambda item: item[0])}
+
+    return dict_count

@@ -32,11 +32,12 @@ def pregunta_01():
 
     """
     
-suma = 0
-    for lista in datos:
-        suma +- int(lista[1])
-
+def sumar_segunda_columna(datos):
+    suma = 0
+    for fila in datos:
+        suma += int(fila[1])
     return suma
+
 
 def pregunta_02():
     """
@@ -53,7 +54,12 @@ def pregunta_02():
     ]
 
     """
-    return
+from collections import Counter
+
+def contar_registros(datos):
+    contador = Counter([fila[0] for fila in datos])
+    lista_tuplas = sorted([(letra, contador[letra]) for letra in contador])
+    return lista_tuplas
 
 
 def pregunta_03():
@@ -71,7 +77,17 @@ def pregunta_03():
     ]
 
     """
-    return
+def sumar_por_letra(datos):
+    suma_por_letra = {}
+    for fila in datos:
+        letra = fila[0]
+        valor = int(fila[1])
+        if letra in suma_por_letra:
+            suma_por_letra[letra] += valor
+        else:
+            suma_por_letra[letra] = valor
+    resultado = sorted(suma_por_letra.items())
+    return resultado
 
 
 def pregunta_04():
@@ -96,7 +112,19 @@ def pregunta_04():
     ]
 
     """
-    return
+from datetime import datetime
+
+def contar_por_mes(datos):
+    conteo_por_mes = {}
+    for fila in datos:
+        fecha = datetime.strptime(fila[2], '%Y-%m-%d')
+        mes = fecha.strftime('%Y-%m')
+        if mes in conteo_por_mes:
+            conteo_por_mes[mes] += 1
+        else:
+            conteo_por_mes[mes] = 1
+    resultado = sorted(conteo_por_mes.items())
+    return resultado
 
 
 def pregunta_05():
@@ -114,7 +142,20 @@ def pregunta_05():
     ]
 
     """
-    return
+def max_min_por_letra(datos):
+    max_min_por_letra = {}
+    for fila in datos:
+        letra = fila[0]
+        valor = int(fila[1])
+        if letra in max_min_por_letra:
+            maximo, minimo = max_min_por_letra[letra]
+            maximo = max(maximo, valor)
+            minimo = min(minimo, valor)
+            max_min_por_letra[letra] = (maximo, minimo)
+        else:
+            max_min_por_letra[letra] = (valor, valor)
+    resultado = sorted(max_min_por_letra.items())
+    return resultado
 
 
 def pregunta_06():
@@ -139,7 +180,33 @@ def pregunta_06():
     ]
 
     """
-    return
+def min_max_values(datos):
+    # Inicializar diccionario de resultados
+    result = {}
+
+    # Iterar sobre los datos
+    for fila in datos:
+        # Decodificar diccionario
+        dic = eval(fila[4])
+
+        # Iterar sobre las claves del diccionario
+        for clave in dic.keys():
+            # Obtener valor asociado a la clave
+            valor = dic[clave]
+
+            # Actualizar valores máximos y mínimos
+            if clave not in result:
+                result[clave] = {'max': valor, 'min': valor}
+            else:
+                if valor > result[clave]['max']:
+                    result[clave]['max'] = valor
+                if valor < result[clave]['min']:
+                    result[clave]['min'] = valor
+
+    # Convertir diccionario de resultados en lista de tuplas
+    result_list = [(clave, result[clave]['min'], result[clave]['max']) for clave in sorted(result.keys())]
+
+    return result_list
 
 
 def pregunta_07():
@@ -163,7 +230,18 @@ def pregunta_07():
     ]
 
     """
-    return
+def asociar_letras(datos):
+    diccionario = {}
+    for fila in datos:
+        valor_col2 = fila[1]
+        letra_col1 = fila[0]
+        if valor_col2 not in diccionario:
+            diccionario[valor_col2] = [letra_col1]
+        else:
+            diccionario[valor_col2].append(letra_col1)
+    lista_tuplas = [(valor, letras) for valor, letras in diccionario.items()]
+    return lista_tuplas
+
 
 
 def pregunta_08():
@@ -188,7 +266,28 @@ def pregunta_08():
     ]
 
     """
-    return
+def lista_tuplas(datos):
+    # Crear diccionario vacío
+    diccionario = {}
+
+    # Iterar sobre los datos
+    for fila in datos:
+        # Obtener la segunda columna y la primera columna de la fila
+        valor = int(fila[1])
+        letra = fila[0]
+
+        # Si el valor no está en el diccionario, agregarlo con una lista vacía
+        if valor not in diccionario:
+            diccionario[valor] = []
+
+        # Si la letra no está en la lista de letras para este valor, agregarla
+        if letra not in diccionario[valor]:
+            diccionario[valor].append(letra)
+
+    # Ordenar las claves del diccionario y generar las tuplas
+    tuplas = [(valor, sorted(diccionario[valor])) for valor in sorted(diccionario)]
+
+    return tuplas
 
 
 def pregunta_09():
@@ -211,7 +310,18 @@ def pregunta_09():
     }
 
     """
-    return
+def contar_claves(datos):
+    conteo = {}
+    for fila in datos:
+        diccionario = dict(item.split(":") for item in fila[4].split(","))
+        claves = diccionario.keys()
+        for clave in claves:
+            if clave not in conteo:
+                conteo[clave] = 1
+            else:
+                conteo[clave] += 1
+    return conteo
+
 
 
 def pregunta_10():
@@ -232,7 +342,17 @@ def pregunta_10():
 
 
     """
-    return
+def contar_elementos(datos):
+    conteos = {}
+    for fila in datos:
+        letra = fila[0]
+        if letra not in conteos:
+            conteos[letra] = [0, 0]
+        conteos[letra][0] += 1
+        conteos[letra][1] += len(fila[3]) + len(fila[4])
+    lista_tuplas = [(letra, conteos[letra][0], conteos[letra][1]) for letra in sorted(conteos)]
+    return lista_tuplas
+
 
 
 def pregunta_11():
@@ -253,7 +373,16 @@ def pregunta_11():
 
 
     """
-    return
+def suma_columna_2_por_letra_columna_4(datos):
+    resultados = {}
+    for fila in datos:
+        letra = fila[3]
+        valor = int(fila[1])
+        if letra in resultados:
+            resultados[letra] += valor
+        else:
+            resultados[letra] = valor
+    return sorted(resultados.items())
 
 
 def pregunta_12():
@@ -271,4 +400,13 @@ def pregunta_12():
     }
 
     """
-    return
+def sumar_columna5_por_columna1(datos):
+    resultado = {}
+    for fila in datos:
+        columna1 = fila[0]
+        columna5 = int(fila[4])
+        if columna1 not in resultado:
+            resultado[columna1] = 0
+        resultado[columna1] += columna5
+    return resultado
+
